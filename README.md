@@ -69,6 +69,7 @@
 		* 4.4.9. [Big Ball of Mud](#BigBallofMud)
 		* 4.4.10. [Making Good Use of Context Mapping](#MakingGoodUseofContextMapping)
 	* 4.5. [Tatical Design With Aggregates](#TaticalDesignWithAggregates)
+		* 4.5.1. [Why Used?](#WhyUsed)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -1118,3 +1119,30 @@ Requires custom development because an off-the-self product doesn't exist
 ![](./images/81.png)
 
 ###  4.5. <a name='TaticalDesignWithAggregates'></a>Tatical Design With Aggregates
+
+####  4.5.1. <a name='WhyUsed'></a>Why Used?
+
+![](./images/82.png)
+
+- All the circled items are the aggregate
+    - Other object is a `value object`
+- An aggregate has a few different parts to it
+    - Root entity
+        - Called `aggregate root`
+    - May also hold other `entities` and `value objects`
+- The `aggregate root` names the concept of the entire aggregate
+    - Global unique identity
+
+![](./images/83.png)
+
+- An aggregate is a `transactional consistent boundary`
+     - Inside an aggregate, everything must be consistent at the end of a transaction
+     - At the beginning of a use case, a transaction is started
+     - The aggregate makes its changes
+     - Transaction finished
+     - Transaction commits
+     - Everything within a single aggregate boundary is consistent and up to date
+- A single transaction does NOT span multiple aggregates
+- It's a transactional boundary
+
+![](./images/84.png)
