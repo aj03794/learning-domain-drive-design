@@ -1394,3 +1394,197 @@ Requires custom development because an off-the-self product doesn't exist
     - Time based
         - End of day/week/year
     - Example, fiscal year end, market close
+
+#### Event Sourcing
+
+- If our `BacklogItem` aggregate was an event sourced aggregate, we would save an event for every "signifiant" thing that happens to it
+
+![](./images/106.png)
+
+- When each of these events occur, they are saved as an event stream to an event log in our database
+- If we want to recover the state of our BacklogItem aggregate, we can read back each of those domain events and interpret those onto the state of the BacklogItem
+- Step 1, CommitBacklogItemToSpring is a command that is executed on the BacklogItem aggregate
+- Step 2, BacklogItem aggregate emits a BacklogItemCommited domain event
+- Step 3, BackogItemCommitted domain event is saved in the order in which it occurred to a database table which is an event log
+- Step 4, the BacklogItem aggregate needs to be reconsituted from its persisted state
+    - We read the events from the order in which they originally occurred
+        - We read BacklogItemPlanned, BacklogItemStoryDefined, BacklogItemCommitted from the stored events and reapply those to the BacklogItem aggregate which recovers its state
+
+<br>
+
+- Database table could look like this:
+
+![](./images/107.png)
+
+- StreamId is the id of the BacklogItem
+- StreamVersion is the order for which the events occurred
+    - 1 based sequence number
+- EventType is the name of the class (name of the domain event)
+- EventContent is a serialized version of the event
+- Now if we reconsitute the BacklogItem aggregate, we would read the entire stream for `backlogItem123`(in this case stream version 1,2,3)
+
+### Acceleration and Management Tools
+
+#### Introduction
+
+- How do we get a good model under tight time constraints?
+
+##### Modeling within Time Constraints
+
+- Our goal is to learn about a business domain and refine a model
+- Knowledge crunching takes time
+- If we don't learn and model quickly, we will seem to fail even if we deliver
+- We must timebox our modeling efforts
+- We must not try to eliminate design
+
+##### Facing the Time Challenging
+
+- Event Storming
+- Agile estimations
+
+#### Event Storming
+
+- Accelerated and knowledge crunching technique
+- Focus on business process
+    - Not on data, database process, or model
+- Model those processes as domain events
+- Model the cause of those domain events (commands)
+- Model the aggregates on which the commands occur
+    - This in turn emit the domain events
+
+<br>
+
+- When performing event storming, you need the entire team
+    - Domain expert(s) and developers
+- Event storming has a lot to do with asking the right questions
+    - Need domain experts to answer those questions
+
+<br>
+
+- Need stick notes
+    - Orange notes for events
+    - Blue for commands
+    - Pale yellow for aggregates
+    - May want other kind like red for caution/error scenario
+    - Green which models significant UI components
+    - Lilac/Purple which models policies/processes that occur in model
+    - Yellow which call out personas
+- Fine tipped black markers so you can write accurately
+- Large modeling surface
+
+![](./images/108.png)
+
+##### Step 1: Model Events in Time Order
+
+- Someone in team, take orange sticky note and write event on it that happens in our domain model
+    - Verb in past tense (product created for example)
+    - Doesn't need to be first event that can happen in core domain that happens
+    - Kicks off process
+- In time, domain events will be created in time order
+- Can take a couple of hours
+
+![](./images/109.png)
+
+##### Step 2: Model Commands that Cause Events
+
+![](./images/110.png)
+
+- Now have time series of command/event pairs
+- Certain commands may cause domain events in parallel or some domain events occur in parallel
+    - This is okay, make note of this, and stack them using vertical spacing
+
+##### Step 3: Model the Aggregates
+
+- You can also call these entities or the data of the model for business people
+
+![](./images/111.png)
+
+- Will produce at least one aggregate that emits domain events and responds to commands
+- Keep in time order, it's okay if the same aggregate receives multiple commands over time
+    - That yellow sticky (the aggregate) should be on the board multiple times
+
+##### Step 4: Identify Context Boundaries
+
+- As you're modeling events, commands, and aggregates you're going to realize that some of these apply to core domain and some of them doing
+    - Some of the commands and events belong in other bounded contexts
+- Try to identify core domain, try to identify that is competitively advantageous and what is generic
+- Ovals represent the contextual boundaries
+- This is where modeling gets more detailed and more implementation oriented
+
+![](./images/112.png)
+
+- You won't capture all info here, this additional detail will come when talking about specific scenarios and defining acceptance criteria
+
+##### Step 5: Identify Views & Other Components
+
+- Understand certain views that are important to the user
+
+![](./images/113.png)
+
+- Identify certain policies where there is complexity around seeing that a certain business policy is carried out (you can represent this with a lilac/purple sticky)
+    - Policy will receive events and emit commands (opposite of an aggregate)
+
+#### Managing DDD on an Agile Project
+
+- Reject taskboard shuffle
+    - This is where design doesn't really happen
+
+##### Agile Execution Framework
+
+- Scrum
+- Kanban
+- Another agile approach
+
+##### First Things First
+
+- SWOT
+    - Strengths - what's going well
+    - Weaknesses - what needs to be improved
+    - Opportunity - where do we need to focus energy
+    - Obstacles - things that must be surpassed
+
+![](./images/114.png)
+
+###### Bottom Line: Identify Knowledge Gaps in the Model
+
+- Find out where your model needs work
+- Knowledge acquisition will lead to modeling breakthroughs
+
+##### Modeling Spikes and Modeling Debt
+
+###### Modeling Spikes
+
+- Will likely having modeling spike during project inception
+    - Event storming is useful here
+- Will experiment with domain model using info from modeling spike
+    - Write acceptance tests and flesh out the model against the acceptance tests
+- Model will require ongoing refinement
+
+###### Modeling Debt
+
+- Dissatisfaction and late learning result in desire to refactor the model
+    - Usually due to initial timeboxing
+- Timeboxing modeling efforts will lead to at least some unfinished modeling
+    - Timeboxing is usually the sprint or the iteration
+- These naturally lead to incurring modeling debt
+- Modeling debt must be paid later
+    - Don't ignore this, call it out, and address it in later sprint/iteration
+
+##### Identifying Tasks and Estimating Effort
+
+- Find necessary tasks to work on
+- Level of effort for each task
+- Event storming helps us figure this out
+
+![](./images/115.png)
+
+- Can create table for estimations
+    - This can be extended to views, domain services, etc
+    - It can be used for any type of component
+
+![](./images/116.png)
+
+- Take each of estimation units and estimate LOE easy/moderate/complexity
+- As you estimate each of the aggregates/processes/views/services/events/commands, you can combine these to come up with an estimate on how long the effort will take
+- Things will need to be tuned as we go, the time estimations may change
+- These estimations can include unit tests
