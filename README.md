@@ -1146,3 +1146,251 @@ Requires custom development because an off-the-self product doesn't exist
 - It's a transactional boundary
 
 ![](./images/84.png)
+
+#### Aggregate Rules of Thumb
+
+- Protect business invariants inside Aggregate boundaries
+- Design small Aggregates
+- Reference other Aggregates by identity only
+- Update other Aggregates using eventual consistency
+
+##### Rule 1: Protect Business Invariants
+
+- In our example `Product Aggregate` and `Sprint Aggregate` are `controlled under separate transactions`
+- Aggregate roots are `Product` and `Sprint`
+- Business invariants are being protected individually
+
+![](./images/85.png)
+
+- When all tasks under a backlog item have `hoursRemaining == 0`, then status of BacklogItem is `status == done`
+- When there is a single task remaining status of BacklogItem is `status == inprogress`
+    - When the last task is finished, a transaction is started in the BacklogItem Aggregate, at the end of the transaction, status is updated to `done` and transaction is committed
+        - This is a business constraint is required to be consistent at all times so it must be done within the same transaction
+
+![](./images/86.png)
+
+##### Rule 2: Design Small Aggregates
+
+- It is possible to design it this way, but that is a large aggregate
+
+![](./images/87.png)
+
+- This large aggregate design will likely cause transactional failures because of separate users with different goals modifying the same aggregate in separate transactions
+    - Committing a backlog item to a sprint and we plan a new backlog item `at the same time by two different users`, this will change different parts of the same aggregate instance at the same time causing failure
+        - One of these transactions will succeed and the other will fail
+        - Concurrency violation in database
+- Size of aggregate in memory takes us a lot of memory, slower to load, etc
+
+<br>
+
+- A smaller aggregate design could look like the following
+
+![](./images/88.png)
+
+##### Rule 3: Reference by Identity Only
+
+- Child aggregates- backlog item, release, sprint - need to know parent aggregate (product), and that be done using `ProductId`
+- Smaller memory footprint when doing this
+- Cannot reach out to parent aggregate directly and make a modification to it at the same time one of the child aggregates is being modified
+    - Not tempted to break rule 1 
+
+![](./images/89.png)
+
+##### Rule 4: Update Other Aggregates Eventally (Eventual Consistency)
+
+- When a backlog item is committed to a sprint, backlog item is going to hold a reference to the sprint to which it is now committed
+- When the backlog item is commited to a sprint and the sprintId is set on it, that backlog item is going to be committed in a single transaction
+    - The sprint aggregate does not yet know that the backlog item has been committed to it
+    - Eventually the sprint will know about it and it will now hold a committed backlog item instance
+    - This entity will be set in a separate transaction
+    - The `BacklogItem` will emit a `BacklogItemCommitted` message, the `Sprint` will use that to create a new `CommittedBacklogItem`
+
+![](./images/90.png)
+
+- This works using messaging
+
+![](./images/91.png)
+
+- In our instance, the `agile product management context` is listening to its own domain event
+
+![](./images/92.png)
+
+#### Modeling Aggregates
+
+- Don't model using an `anemic domain model`
+    - This domain model is usually missing all of the business logic
+    - Usually just have getters/setters
+
+<br>
+
+- How to model aggregates appropriately?
+- Remember that an aggregate is a transactional consistency boundary
+- You must always have a `root entity` at least for an aggregate
+- May have other entites or value objects
+- `Root entity` is named is such a way that it names the entire aggregate concept
+
+![](./images/93.png)
+
+- Don't necessarily need an `Entity` supertype if it helps
+- `TenantId` allows different tenants to subscribe to this service
+    - Each tenant will have a different Id
+- Product class will hold 2 other properties - a name and a description
+
+![](./images/94.png)
+
+- Accessor will exist to `get` both `Name` and `Description`, but the `setter` is private 
+
+![](./images/95.png)
+
+- Why a private `setter`?
+- This will make you design behavior in the product root entity
+    - This is because this behavior will be able to use the private setters
+- This forces clients to use the public behavior only
+
+<br>
+
+- As designing and modeling aggregates, we will use the ubiquitious language in code
+
+![](./images/96.png)
+
+#### Choose Your Abstractions Carefully
+
+- The ubiqutious language in the `Scrum Project Management` domain naturally uses language like:
+    - Product
+    - BacklogItem
+    - Release
+    - Sprint
+- Our model should be designed in code with these concepts in mind
+
+<br>
+
+- It is possible to go in a different direction
+- What if developers tried to overabstract the model?
+    - They wouldn't use the ubiquitious language in code
+    - They might use something like
+        - ScrumElement (could be used to model Product and BacklogItem)
+        - ScrumElementContainer (could be used for Release and Sprint) - it would contain ScrumElement(s)
+- We are moving against the ubiquitous language that is spoken in Scrum
+    - ScrumElement and ScrumElementContainer do not properly represent the concrete items that live in Scrum Project Management
+
+<br>
+
+##### Problems with Wrong Abstractions
+
+- Hard to model details of specific types
+- Special cases and complex class hierarchies
+- More code than necessary than if modeling explicitly
+    - General purpose concepts require much more code
+- Will influence user interface negatively
+- Waste time and money pursuing wrong design
+- Imagined future proofing your design will meet with failure when future concepts realized
+
+##### Model Explicitly Per Ubiquitous Language
+
+- Adheres to the mental model of *Domain Model*
+- Creates an understandable model
+- Protects the organization's software investment
+- Saves time and money
+
+#### Right-Sizing Aggregates
+
+##### Modeling Steps
+
+- Design small aggregates
+    - Design all aggregates with just one entity if possible
+    - In the below example, we would remove the entity and make it the root entity in its own aggregate
+
+![](./images/97.png)
+
+- Protect business invariants
+    - Make a chart with Aggregate names and list dependents (other aggregates that will need to be updated) under each
+- Ask Domain Experts for an acceptable time frames for updates to each dependents
+    - Will either need to be immediate or eventually (N number of seconds/minutes/hours/days/etc)
+    - House all immediate updates under one Aggregate
+        - In our example, if the entity that is dependent upon the root entity needs to be immediately updated, it will need to be housed inside our aggregate
+    - If update can be eventual, plan to update all dependents eventually
+
+![](./images/98.png)
+
+- In this example, A2 must be updated immediately following A1
+    - This means it needs to be in the same A aggregate, so they both need to be housed under Aggregate A
+- Aggregate C14 can be eventually consistent, this can happen via a domain event
+
+#### Testable Units
+
+- Aggregate designs should accomodate unit testings
+
+##### Unit Test Aggregates
+
+- Designing small aggregates will help make Aggregates testable
+- Unit tests are different from acceptance tests
+- Test for correctness and robustness of each Component
+
+### Tactical Design with Domain Events
+
+#### Introduction
+
+![](./images/99.png)
+
+##### Causal Consistency
+
+- Example about posts and discussions
+- 1. Sue posts a message saying `I lost my Wallet`
+- 2. Gary says in reply `That's terrible`
+- 3. Sue replies `Don't worry, I found my wallet`
+- 4. Gary replied `That's great`
+
+<br>
+
+- What would happen here if Sue's first post reaches servers in another area quickly
+- Delay in Gary's 1st message reaching that same area
+- Gary's messages appear out of order because his 2nd message reaches the servers befor Gary's 1st message
+- Have to ensure that message 2 comes after message 1 (and so on and so forth)
+- This is causal consistency
+- `In terms of domain events, we have to be certain that each of the events are received and handled in the sequence that they occurred`
+
+#### Designing, Implementing, and Using Domain Events
+
+![](./images/100.png)
+
+- Example of some domain events in our context
+
+![](./images/101.png)
+
+- Notice naming convention, noun + verb
+    - ProductCreated
+    - ReleaseScheduled
+
+<br>
+
+- What should be in a `ProductCreated` domain event
+- The `cause` was `CreateProduct`
+- In response to this command, a `Product` aggregate is created and the aggregate publishes the `ProductCreated` domain event
+
+![](./images/102.png)
+
+- Note the ProductCreated has the same properties as the CreateProduct command
+
+<br>
+
+- CommitBacklogItemToSprint example
+
+![](./images/103.png)
+
+- The BacklogCommited domain event is saved to an events table in the database
+- The BacklogItem state is also saved to the database
+- These two commits happen within the same transaction
+- Either saved together or rolled back together
+
+![](./images/104.png)
+
+- After BacklogItemCommitted is saved, the BacklogItemCommited can then be read out of that table and published through a messaging mechanism
+
+![](./images/105.png)
+
+##### Domain Events are Facts
+
+- May be caused by a non-command source
+    - Time based
+        - End of day/week/year
+    - Example, fiscal year end, market close
