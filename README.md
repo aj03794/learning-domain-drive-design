@@ -70,6 +70,22 @@
 		* 4.4.10. [Making Good Use of Context Mapping](#MakingGoodUseofContextMapping)
 	* 4.5. [Tatical Design With Aggregates](#TaticalDesignWithAggregates)
 		* 4.5.1. [Why Used?](#WhyUsed)
+		* 4.5.2. [Aggregate Rules of Thumb](#AggregateRulesofThumb)
+		* 4.5.3. [Modeling Aggregates](#ModelingAggregates)
+		* 4.5.4. [Choose Your Abstractions Carefully](#ChooseYourAbstractionsCarefully)
+		* 4.5.5. [Right-Sizing Aggregates](#Right-SizingAggregates)
+		* 4.5.6. [Testable Units](#TestableUnits)
+	* 4.6. [Tactical Design with Domain Events](#TacticalDesignwithDomainEvents)
+		* 4.6.1. [Introduction](#Introduction-1)
+		* 4.6.2. [Designing, Implementing, and Using Domain Events](#DesigningImplementingandUsingDomainEvents)
+		* 4.6.3. [Event Sourcing](#EventSourcing)
+	* 4.7. [Acceleration and Management Tools](#AccelerationandManagementTools)
+		* 4.7.1. [Introduction](#Introduction-1)
+		* 4.7.2. [Event Storming](#EventStorming)
+		* 4.7.3. [Managing DDD on an Agile Project](#ManagingDDDonanAgileProject)
+* 5. [Domain Services vs Application Services](#DomainServicesvsApplicationServices)
+	* 5.1. [Domain Services vs Application Services](#DomainServicesvsApplicationServices-1)
+	* 5.2. [When to extract to a domain service?](#Whentoextracttoadomainservice)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -1147,7 +1163,7 @@ Requires custom development because an off-the-self product doesn't exist
 
 ![](./images/84.png)
 
-#### Aggregate Rules of Thumb
+####  4.5.2. <a name='AggregateRulesofThumb'></a>Aggregate Rules of Thumb
 
 - Protect business invariants inside Aggregate boundaries
 - Design small Aggregates
@@ -1215,7 +1231,7 @@ Requires custom development because an off-the-self product doesn't exist
 
 ![](./images/92.png)
 
-#### Modeling Aggregates
+####  4.5.3. <a name='ModelingAggregates'></a>Modeling Aggregates
 
 - Don't model using an `anemic domain model`
     - This domain model is usually missing all of the business logic
@@ -1253,7 +1269,7 @@ Requires custom development because an off-the-self product doesn't exist
 
 ![](./images/96.png)
 
-#### Choose Your Abstractions Carefully
+####  4.5.4. <a name='ChooseYourAbstractionsCarefully'></a>Choose Your Abstractions Carefully
 
 - The ubiqutious language in the `Scrum Project Management` domain naturally uses language like:
     - Product
@@ -1292,7 +1308,7 @@ Requires custom development because an off-the-self product doesn't exist
 - Protects the organization's software investment
 - Saves time and money
 
-#### Right-Sizing Aggregates
+####  4.5.5. <a name='Right-SizingAggregates'></a>Right-Sizing Aggregates
 
 ##### Modeling Steps
 
@@ -1316,7 +1332,7 @@ Requires custom development because an off-the-self product doesn't exist
     - This means it needs to be in the same A aggregate, so they both need to be housed under Aggregate A
 - Aggregate C14 can be eventually consistent, this can happen via a domain event
 
-#### Testable Units
+####  4.5.6. <a name='TestableUnits'></a>Testable Units
 
 - Aggregate designs should accomodate unit testings
 
@@ -1326,9 +1342,9 @@ Requires custom development because an off-the-self product doesn't exist
 - Unit tests are different from acceptance tests
 - Test for correctness and robustness of each Component
 
-### Tactical Design with Domain Events
+###  4.6. <a name='TacticalDesignwithDomainEvents'></a>Tactical Design with Domain Events
 
-#### Introduction
+####  4.6.1. <a name='Introduction-1'></a>Introduction
 
 ![](./images/99.png)
 
@@ -1349,7 +1365,7 @@ Requires custom development because an off-the-self product doesn't exist
 - This is causal consistency
 - `In terms of domain events, we have to be certain that each of the events are received and handled in the sequence that they occurred`
 
-#### Designing, Implementing, and Using Domain Events
+####  4.6.2. <a name='DesigningImplementingandUsingDomainEvents'></a>Designing, Implementing, and Using Domain Events
 
 ![](./images/100.png)
 
@@ -1395,7 +1411,7 @@ Requires custom development because an off-the-self product doesn't exist
         - End of day/week/year
     - Example, fiscal year end, market close
 
-#### Event Sourcing
+####  4.6.3. <a name='EventSourcing'></a>Event Sourcing
 
 - If our `BacklogItem` aggregate was an event sourced aggregate, we would save an event for every "signifiant" thing that happens to it
 
@@ -1423,9 +1439,9 @@ Requires custom development because an off-the-self product doesn't exist
 - EventContent is a serialized version of the event
 - Now if we reconsitute the BacklogItem aggregate, we would read the entire stream for `backlogItem123`(in this case stream version 1,2,3)
 
-### Acceleration and Management Tools
+###  4.7. <a name='AccelerationandManagementTools'></a>Acceleration and Management Tools
 
-#### Introduction
+####  4.7.1. <a name='Introduction-1'></a>Introduction
 
 - How do we get a good model under tight time constraints?
 
@@ -1442,7 +1458,7 @@ Requires custom development because an off-the-self product doesn't exist
 - Event Storming
 - Agile estimations
 
-#### Event Storming
+####  4.7.2. <a name='EventStorming'></a>Event Storming
 
 - Accelerated and knowledge crunching technique
 - Focus on business process
@@ -1524,7 +1540,7 @@ Requires custom development because an off-the-self product doesn't exist
 - Identify certain policies where there is complexity around seeing that a certain business policy is carried out (you can represent this with a lilac/purple sticky)
     - Policy will receive events and emit commands (opposite of an aggregate)
 
-#### Managing DDD on an Agile Project
+####  4.7.3. <a name='ManagingDDDonanAgileProject'></a>Managing DDD on an Agile Project
 
 - Reject taskboard shuffle
     - This is where design doesn't really happen
@@ -1589,11 +1605,11 @@ Requires custom development because an off-the-self product doesn't exist
 - Things will need to be tuned as we go, the time estimations may change
 - These estimations can include unit tests
 
-## Domain Services vs Application Services
+##  5. <a name='DomainServicesvsApplicationServices'></a>Domain Services vs Application Services
 
 - https://enterprisecraftsmanship.com/posts/domain-vs-application-services/
 
-### Domain Services vs Application Services
+###  5.1. <a name='DomainServicesvsApplicationServices-1'></a>Domain Services vs Application Services
 
 - **Domain Services hold domain logic whereas application services do not**
 - Domain services participate in the business decision making process just like entities and value objects do
@@ -1655,7 +1671,7 @@ public void DispenseMoney(decimal amount)
 
 - So even if the application service ignores the decision made by `CanDispenseMoney`, the Atm entity cannot enter an inconsistent state
 
-### When to extract to a domain service?
+###  5.2. <a name='Whentoextracttoadomainservice'></a>When to extract to a domain service?
 
 - In above example, the code doesn't make any business decisions
 - **Note that the domain model is isolated**
