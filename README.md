@@ -138,13 +138,14 @@
 - Subdomain is a problem space concept
 - Bounded context is a solution space concept
 - Ideally a subdomain would live within a single bounded context cleanly
-
-```
-A subdomain is a part of your business. There are core domains, supporting domains and generic domains. Core domains are where the money is, supporting domains support your core business, and generic domains are the ones you need, but don't care a lot about, so you would probably buy them of the shelf. For an insurance company, the core domain is insurance, a supporting domain could be client portfolio, and a generic domain could be something like timesheets.
-```
+- `A subdomain is a part of your business. There are core domains, supporting domains and generic domains. Core domains are where the money is, supporting domains support your core business, and generic domains are the ones you need, but don't care a lot about, so you would probably buy them of the shelf. For an insurance company, the core domain is insurance, a supporting domain could be client portfolio, and a generic domain could be something like timesheets.`
 
 - Think of a floor with carpeting - those are two distinct things
     - The bounded context is the carpeting that had been shapped to fit the flooring (the subdomain)
+
+<br>
+
+- Ideally each subdomain would live in its own bounded context
 
 ####  3.1.4. <a name='ContextMaps'></a>Context Maps
 
@@ -428,7 +429,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - Aggregates can also consist of just one object and that one object would also be the aggregate root
 - Data changes to the aggregate should follow `ACID`
     - Atomic, Consistent, Isolated, and Durable
-- It is the responsibility of the aggregate root to maintain `invariance`
+- It is the responsibility of the aggregate root to maintain `invariants`
     - An invariant is something that should always be true for the system to be in a consistent state
 
 ![](./images/28.png)
@@ -1521,7 +1522,7 @@ Requires custom development because an off-the-self product doesn't exist
 
 ##### Step 4: Identify Context Boundaries
 
-- As you're modeling events, commands, and aggregates you're going to realize that some of these apply to core domain and some of them doing
+- As you're modeling events, commands, and aggregates you're going to realize that some of these apply to core domain and some of them don't
     - Some of the commands and events belong in other bounded contexts
 - Try to identify core domain, try to identify that is competitively advantageous and what is generic
 - Ovals represent the contextual boundaries
@@ -1775,3 +1776,281 @@ We put just enough logic into the domain service to work properly
     - Don't always need to introduce a separate domain service
 - If the application service becomes too complex or rules are being duplicated, it's probably time for a domain service
 
+## Event Storming
+
+- https://github.com/ddd-crew/eventstorming-glossary-cheat-sheet
+
+## Event Storming Video
+
+- https://learning.oreilly.com/videos/event-storming
+- Directly map real domain into application
+- If our application is structured just like the real world domain, it's easy to know where to go when you need to make a change
+    - Scope of change in application will be same as scope of change in real world domain
+
+### Bounded Contexts
+
+- Model business structure or flow
+    - **A miroservice being a bounded context is incorrect** (according to this video anyways)
+        - A microservice is really an entity
+- Within different boundaries, we have lots of objects (entities) that do work
+- Entities within contexts talk to each other
+- Entities should not directly talk to entities in other contexts (this would lead to a big ball of mud)
+    - You do this by delegating one entity to communicate with other context (aggregate root)
+
+![](./images/117.png)
+
+- Using something like a `Product` in any context is fundamentally against DDD
+
+### Orchestration
+
+![](./images/118.png)
+
+- If `Shopping-Cart Service` can only talk to `Billing Service` but can't talk to `Warehouse Service`, what happens?
+    - You've billed your customer but you can't ship it b/c you can't talk to `Warehouse Service`
+- `Shopping-Cart Service` is tightly coupled to `Warehouse Service` and `Email Service`
+
+<br>
+
+#### Solution is Choreography
+
+- Want something like pubsub
+- We talk via events, and those system get the events and react to the events
+
+![](./images/119.png)
+
+- When DDD originally came out, microservices didn't exist, so Eric Evans suggest this same time of async communication (domain events) within your monolith
+
+### Entities (Subcontexts)
+
+- How do we organize and recognize events and entities that participate in a system
+    - CRC cards
+        - Good way to keep entities organized
+
+![](./images/120.png)
+
+- SRP - all things that a class does are all focused on the same objective
+
+![](./images/121.png)
+
+### User Stories
+
+- Need to happen before event storming
+- A short narrative
+    - Has beginning, end, charaters
+    - A couple of sentences
+- We want to delay doing things until we can't delay anymore
+    - World changes so quickly that if we make decisions to early, that odds of those being the wrong decisions is high
+- Describes a user performing a domain process
+    - Describes customer's work, the process they're doing to get something done
+    - Should have valuable outcome for that user
+    - **Stories describe your user's work, not yours**
+        - Fixing the database is not a story
+            - In order to do something, the databased needs to be fixed is a story
+- **It describes a full vertical slice through entire system**
+- A placeholder for a conversatoin that happens just before (and during) development
+    - Do not "flush out" the details until you're ready to implement
+    - If you have to write it down to remember, you're doing it too early
+    - You do this constantly as you're working
+        - Doesn't only happen at the beginning of a 2 week iteration
+        - Product Owner has to be able to respond within a couple of minutes for this to work
+- **Delay until the last responsible moment**
+
+#### Invest Criteria
+
+- More information: https://agileforall.com/new-to-agile-invest-in-good-user-stories/
+    - Don't know when a story is done - Ask *How will I know I've done that?* - https://agileforall.com/when-in-doubt-ask-how-will-i-know-ive-done-that-2/
+
+- Used when defining stories
+
+<br>
+
+- I: Independent
+    - If you have a set of stories, you should be able to implement them in any order
+- N: Negotiable
+    - A story is an invitation to conversation
+    - Story captures the essence of what is desired
+- V: Valuable to end user
+- E: Estimable
+    - Estimable being worthy of great respect
+    - Or `end-to-end` - story should describe entire domain process from beginning to end
+    - Essential - essential to business/end user
+- S: Small
+    - Something you can do in a day or two
+- T: Testable
+    - Automated acceptance tests (BDD)
+
+<br>
+
+- Keep users in mind to get stories right
+    - Checkout page of website
+        - User wants to leave site as quickly as possible
+            - Make this as easy as possible - like Amazon with 1 click buy
+
+#### Epic
+
+- A broad set of capabilities that the business is willing to bet will provide sufficient value that's worth doing a bit of experimental development
+- An epic is NOT a bag of stories
+- Epics are planning tools for the business
+    - Set strategic direction to create value
+
+
+#### Story Format
+
+![](./images/122.png)
+
+- Bad user story example below
+
+![](./images/123.png)
+
+- With a big story, think about how you can break it down
+    - And then how can you break it down ever further, etc
+- Want stories to be as small as possible
+    - No more than a couple days to implement
+- Well sized story has a single acceptance tests
+
+<br>
+
+- Do not write stories for each layer that needs to be changed
+
+<br>
+
+- Don't split stories horizontally across layers
+
+![](./images/124.png)
+
+<br>
+
+- **Best way to split stories is to isolate workflows**
+
+
+#### Activity Diagram
+
+![](./images/125.png)
+
+- You want to take this diagram, that shows many different workflows, and take specific workflows and make stories from those
+
+![](./images/126.png)
+
+#### More info on how to split a user story
+
+- https://3p72t53zzqr23puj171gfblg-wpengine.netdna-ssl.com/wp-content/uploads/2020/12/Story-Splitting-Flowchart.pdf
+
+### Event Storming
+
+- By Alberto Brandolini
+- Way to DDD
+- "Business people and developers must work together throughout the project"
+- Use stories as a guide to what to model
+
+<br>
+
+- **Event**
+    - Something thaat happened in the business that your customers (domain experts) care about
+        - *Order submitted*
+        - *Payment received*
+        - *Nightly reconciliation completed*
+    - Lay out events in a timeline
+
+![](./images/127.png)
+
+- Can also use electronically
+- Blue notes are things done when event is received
+- Orange notes are events
+- Red notes are questions
+    - Not finished until red is gone
+- Policies are also listed
+    - *I will sent this event because of this rule*
+
+![](./images/128.png)
+
+<br>
+
+![](./images/129.png)
+
+- `Warehouse` receives the `order placed` event and, as a result, the `items are picked`
+- Diagram can expand
+
+![](./images/130.png)
+
+- The *policy* here gives rules that we have to follow to send an event
+
+![](./images/131.png)
+
+- As understanding grows you can get above diagram
+    - `Shipping` is the context in which `warehouse` exists
+    - `Items` and `Destination` are in payload of the `Order placed` event
+    - Getting more implementationy
+
+<br>
+
+- Once you have all entities in `Shipping` context, you can group them together and then you have the `Shipping` bounded context
+- **This is the entire architecture, and the entire thing is event driven**
+
+#### Live Event Storming Example
+
+- Events in a book store
+
+![](./images/132.png)
+
+- What events stem from that first event?
+
+![](./images/133.png)
+
+- Obvious events come first
+- Then you discover events that you hadn't thought about initially
+
+![](./images/134.png)
+
+- Now we can work backwards from `order accepted`
+
+![](./images/135.png)
+    - As we look at these events, are there ones that can be grouped together and still have value
+    - You can put things into a cart without buying anything, so that's a valuable work stream
+
+<br>
+
+- Now we can move onto activities that happen as a result of events
+
+![](./images/136.png)
+
+- Starting to this about activities will also flesh out new activites
+    - In the above example, shouldn't a `create label...` activity result in a `label created` event?
+
+![](./images/137.png)
+
+- Activities can result in more than one event
+    - In our case, when you `create label and notify UPS` (there's an "and" here b/c that's how it works with UPS)
+
+![](./images/138.png)
+    - Notice that `label created` and `tracking info received` are vertically aligned
+        - This means that they are both created as a result of the `create label and notify UPS` activity
+
+<br>
+
+- Now we can move on to aggregates/entities
+
+![](./images/139.png)
+
+- **The shipping clerk (in warehouse context) creates and notifies UPS when order shipped event is received**
+
+![](./images/140.png)
+
+- Note that *customer liason* is in the *warehouse* context, but that may change (which is okay)
+
+![](./images/141.png)
+
+- Copy all yellow cards
+    - Make CRC cards (infinity map) that identify entity and context and responsibilites
+
+<br>
+
+- Pick one story, do event storming as part of iteration (shouldn't take more than 1/2 hour for single story) and then code it
+- **Event storming** is done on a per story basis
+- Sometimes it's helper to do a bigger event storming session to figure out where the boundaries even are
+- If you're making microservices out of this:
+    - salesperson is a microservice
+    - shipping clerk is a microservice
+    - customer liason is a microservice
+    - comptroller is a microservice
+    - warehouse is a microservice
+        - This microservice serves an an entry point for working with other entities in the warehouse context (shipping clerk, customer liason, comptroller)
