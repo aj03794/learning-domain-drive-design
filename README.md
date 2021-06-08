@@ -1,4 +1,143 @@
-<!-- vscode-markdown-toc -->
+<!-- TOC -->
+
+- [<a name='DDDvsCleanArchitecture'></a>DDD vs Clean Architecture](#a-namedddvscleanarchitectureaddd-vs-clean-architecture)
+- [<a name='CommandQuerySegregation'></a>Command Query Segregationn](#a-namecommandquerysegregationacommand-query-segregationn)
+- [<a name='3.Domain-DrivenDesignFundamentals'></a> 3. Domain-Driven Design Fundamentalss](#a-name3domain-drivendesignfundamentalsa-3-domain-driven-design-fundamentalss)
+    - [<a name='DDD:ModelingProblemsinSoftware'></a>DDD: Modeling Problems in Softwaree](#a-namedddmodelingproblemsinsoftwareaddd-modeling-problems-in-softwaree)
+        - [<a name='ValueObjects'></a>Value Objectss](#a-namevalueobjectsavalue-objectss)
+        - [<a name='BoundedContext'></a>Bounded Contextt](#a-nameboundedcontextabounded-contextt)
+        - [<a name='SubDomainvsBoundedContext'></a>SubDomain vs Bounded Contextt](#a-namesubdomainvsboundedcontextasubdomain-vs-bounded-contextt)
+        - [<a name='ContextMaps'></a>Context Mapss](#a-namecontextmapsacontext-mapss)
+        - [<a name='OurBoundedContextsforthisApp'></a>Our Bounded Contexts for this Appp](#a-nameourboundedcontextsforthisappaour-bounded-contexts-for-this-appp)
+        - [<a name='UbiquitousLanguage'></a>Ubiquitous Languagee](#a-nameubiquitouslanguageaubiquitous-languagee)
+        - [<a name='Terms'></a>Termss](#a-nametermsatermss)
+    - [<a name='ElementsofaDomainModel'></a>Elements of a Domain Modell](#a-nameelementsofadomainmodelaelements-of-a-domain-modell)
+        - [<a name='FocusontheDomain'></a>Focus on the Domainn](#a-namefocusonthedomainafocus-on-the-domainn)
+        - [<a name='AnemicandRichModels'></a>Anemic and Rich Modelss](#a-nameanemicandrichmodelsaanemic-and-rich-modelss)
+        - [<a name='EntitiesinDDDandinOurBoundedContext'></a>Entities in DDD and in Our Bounded Contextt](#a-nameentitiesindddandinourboundedcontextaentities-in-ddd-and-in-our-bounded-contextt)
+        - [<a name='EntitiesSingleResponsibilityPrinciple'></a>Entities & Single Responsibility Principlee](#a-nameentitiessingleresponsibilityprincipleaentities--single-responsibility-principlee)
+        - [<a name='ShouldEntitiesHaveEqualityComparers'></a>Should Entities Have Equality Comparers??](#a-nameshouldentitieshaveequalitycomparersashould-entities-have-equality-comparers)
+        - [<a name='ImplementingEntitiesofCode'></a>Implementing Entities of Codee](#a-nameimplementingentitiesofcodeaimplementing-entities-of-codee)
+        - [<a name='Associationsakarelationships'></a>Associations aka relationships](#a-nameassociationsakarelationshipsaassociations-aka-relationships)
+        - [<a name='ValueObjects-1'></a>Value Objectss](#a-namevalueobjects-1avalue-objectss)
+        - [<a name='ValueObjectsinCode'></a>Value Objects in Codee](#a-namevalueobjectsincodeavalue-objects-in-codee)
+        - [<a name='EntityLogicinValueObjects'></a>Entity Logic in Value Objectss](#a-nameentitylogicinvalueobjectsaentity-logic-in-value-objectss)
+        - [<a name='DomainServices'></a>Domain Servicess](#a-namedomainservicesadomain-servicess)
+        - [<a name='Glossary'></a>Glossaryy](#a-nameglossaryaglossaryy)
+    - [<a name='AggregatesinDomain-DrivenDesign'></a>Aggregates in Domain-Driven Designn](#a-nameaggregatesindomain-drivendesignaaggregates-in-domain-driven-designn)
+        - [<a name='TacklingDataComplexity'></a>Tackling Data Complexityy](#a-nametacklingdatacomplexityatackling-data-complexityy)
+        - [<a name='Aggregates'></a>Aggregatess](#a-nameaggregatesaaggregatess)
+        - [<a name='InteractingwithAggregates'></a>Interacting with Aggregatess](#a-nameinteractingwithaggregatesainteracting-with-aggregatess)
+        - [<a name='UsingInvariants'></a>Using Invariantss](#a-nameusinginvariantsausing-invariantss)
+        - [<a name='ModelingBreakthroughsandRefactoring'></a>Modeling Breakthroughs and Refactoringg](#a-namemodelingbreakthroughsandrefactoringamodeling-breakthroughs-and-refactoringg)
+        - [<a name='AggregateTips'></a>Aggregate Tipss](#a-nameaggregatetipsaaggregate-tipss)
+        - [<a name='Glossary-1'></a>Glossaryy](#a-nameglossary-1aglossaryy)
+    - [<a name='Repositories'></a>Repositoriess](#a-namerepositoriesarepositoriess)
+        - [<a name='Tips'></a>Tipss](#a-nametipsatipss)
+        - [<a name='RepositoriesvsFactories'></a>Repositories vs Factoriess](#a-namerepositoriesvsfactoriesarepositories-vs-factoriess)
+        - [<a name='UsingaGenericRepositoryInterface'></a>Using a Generic Repository Interfacee](#a-nameusingagenericrepositoryinterfaceausing-a-generic-repository-interfacee)
+        - [<a name='GenericRepositoriesinDDD'></a>Generic Repositories in DDDD](#a-namegenericrepositoriesindddageneric-repositories-in-dddd)
+        - [<a name='RepositoriesinthisApplication'></a>Repositories in this Applicationn](#a-namerepositoriesinthisapplicationarepositories-in-this-applicationn)
+        - [<a name='Glossary-1'></a>Glossaryy](#a-nameglossary-1aglossaryy)
+    - [<a name='AntiCorruptionLayerandDomainEvents'></a>AntiCorruption Layer and Domain Eventss](#a-nameanticorruptionlayeranddomaineventsaanticorruption-layer-and-domain-eventss)
+            - [Designing Domain Events](#designing-domain-events)
+        - [<a name='Anti-CorruptionLayer'></a>Anti-Corruption Layerr](#a-nameanti-corruptionlayeraanti-corruption-layerr)
+            - [The structure of an anti-corruption layer](#the-structure-of-an-anti-corruption-layer)
+        - [<a name='Glossary-1'></a>Glossaryy](#a-nameglossary-1aglossaryy)
+- [<a name='DomainDrivenDesignDistilled'></a>Domain Driven Design Distilledd](#a-namedomaindrivendesigndistilledadomain-driven-design-distilledd)
+    - [<a name='Lession1:DDDforMe'></a>Lession 1: DDD for Mee](#a-namelession1dddformealession-1-ddd-for-mee)
+        - [<a name='GoodBadandEffectiveDesign'></a>Good, Bad, and Effective Designn](#a-namegoodbadandeffectivedesignagood-bad-and-effective-designn)
+            - [Effective Design Is Best](#effective-design-is-best)
+        - [<a name='StrategicDesign'></a>Strategic Designn](#a-namestrategicdesignastrategic-designn)
+        - [<a name='TacticalDesign'></a>Tactical Designn](#a-nametacticaldesignatactical-designn)
+    - [<a name='StrategicDesignwithBoundedContextsandtheUbiquitiousLanguage'></a>Strategic Design with Bounded Contexts and the Ubiquitious Languagee](#a-namestrategicdesignwithboundedcontextsandtheubiquitiouslanguageastrategic-design-with-bounded-contexts-and-the-ubiquitious-languagee)
+        - [<a name='Introduction'></a>Introductionn](#a-nameintroductionaintroductionn)
+        - [<a name='DomainExpertsandBusinessDrivers'></a>Domain Experts and Business Driverss](#a-namedomainexpertsandbusinessdriversadomain-experts-and-business-driverss)
+        - [<a name='CaseStudy'></a>Case Studyy](#a-namecasestudyacase-studyy)
+        - [<a name='FundamentalStrategicDesignNeeded'></a>Fundamental Strategic Design Neededd](#a-namefundamentalstrategicdesignneededafundamental-strategic-design-neededd)
+        - [<a name='ChallengeandUnify'></a>Challenge and Unifyy](#a-namechallengeandunifyachallenge-and-unifyy)
+        - [<a name='Architecture'></a>Architecturee](#a-namearchitectureaarchitecturee)
+    - [<a name='StrategicDesignwithSubdomains'></a>Strategic Design with Subdomainss](#a-namestrategicdesignwithsubdomainsastrategic-design-with-subdomainss)
+        - [<a name='WhatIsaSubdomain'></a>What Is a Subdomain??](#a-namewhatisasubdomainawhat-is-a-subdomain)
+        - [<a name='TypesofSubdomains'></a>Types of Subdomainss](#a-nametypesofsubdomainsatypes-of-subdomainss)
+            - [Core domain](#core-domain)
+            - [Supporting Subdomain](#supporting-subdomain)
+            - [Generic Subdomain](#generic-subdomain)
+        - [<a name='DealingWithComplexity'></a>Dealing With Complexityy](#a-namedealingwithcomplexityadealing-with-complexityy)
+    - [<a name='StrategicDesignWithContextMapping'></a>Strategic Design With Context Mappingg](#a-namestrategicdesignwithcontextmappingastrategic-design-with-context-mappingg)
+        - [<a name='Partnership'></a>Partnershipp](#a-namepartnershipapartnershipp)
+        - [<a name='SharedKernel'></a>Shared Kernell](#a-namesharedkernelashared-kernell)
+        - [<a name='Customer-Supplier'></a>Customer-Supplierr](#a-namecustomer-supplieracustomer-supplierr)
+        - [<a name='Conformist'></a>Conformistt](#a-nameconformistaconformistt)
+        - [<a name='Anti-corruptionLayer'></a>Anti-corruption Layerr](#a-nameanti-corruptionlayeraanti-corruption-layerr)
+        - [<a name='OpenHostService'></a>Open Host Servicee](#a-nameopenhostserviceaopen-host-servicee)
+        - [<a name='PublishedLanguage'></a>Published Languagee](#a-namepublishedlanguageapublished-languagee)
+        - [<a name='SeparateWays'></a>Separate Wayss](#a-nameseparatewaysaseparate-wayss)
+        - [<a name='BigBallofMud'></a>Big Ball of Mudd](#a-namebigballofmudabig-ball-of-mudd)
+        - [<a name='MakingGoodUseofContextMapping'></a>Making Good Use of Context Mappingg](#a-namemakinggooduseofcontextmappingamaking-good-use-of-context-mappingg)
+            - [RPC with SOAP](#rpc-with-soap)
+            - [RESTful HTTP](#restful-http)
+            - [Messaging](#messaging)
+            - [An Example in Context Mapping](#an-example-in-context-mapping)
+    - [<a name='TaticalDesignWithAggregates'></a>Tatical Design With Aggregatess](#a-nametaticaldesignwithaggregatesatatical-design-with-aggregatess)
+        - [<a name='WhyUsed'></a>Why Used??](#a-namewhyusedawhy-used)
+        - [<a name='AggregateRulesofThumb'></a>Aggregate Rules of Thumbb](#a-nameaggregaterulesofthumbaaggregate-rules-of-thumbb)
+            - [Rule 1: Protect Business Invariants](#rule-1-protect-business-invariants)
+            - [Rule 2: Design Small Aggregates](#rule-2-design-small-aggregates)
+            - [Rule 3: Reference by Identity Only](#rule-3-reference-by-identity-only)
+            - [Rule 4: Update Other Aggregates Eventally Eventual Consistency](#rule-4-update-other-aggregates-eventally-eventual-consistency)
+        - [<a name='ModelingAggregates'></a>Modeling Aggregatess](#a-namemodelingaggregatesamodeling-aggregatess)
+        - [<a name='ChooseYourAbstractionsCarefully'></a>Choose Your Abstractions Carefullyy](#a-namechooseyourabstractionscarefullyachoose-your-abstractions-carefullyy)
+            - [Problems with Wrong Abstractions](#problems-with-wrong-abstractions)
+            - [Model Explicitly Per Ubiquitous Language](#model-explicitly-per-ubiquitous-language)
+        - [<a name='Right-SizingAggregates'></a>Right-Sizing Aggregatess](#a-nameright-sizingaggregatesaright-sizing-aggregatess)
+            - [Modeling Steps](#modeling-steps)
+        - [<a name='TestableUnits'></a>Testable Unitss](#a-nametestableunitsatestable-unitss)
+            - [Unit Test Aggregates](#unit-test-aggregates)
+    - [<a name='TacticalDesignwithDomainEvents'></a>Tactical Design with Domain Eventss](#a-nametacticaldesignwithdomaineventsatactical-design-with-domain-eventss)
+        - [<a name='Introduction-1'></a>Introductionn](#a-nameintroduction-1aintroductionn)
+            - [Causal Consistency](#causal-consistency)
+        - [<a name='DesigningImplementingandUsingDomainEvents'></a>Designing, Implementing, and Using Domain Eventss](#a-namedesigningimplementingandusingdomaineventsadesigning-implementing-and-using-domain-eventss)
+            - [Domain Events are Facts](#domain-events-are-facts)
+        - [<a name='EventSourcing'></a>Event Sourcingg](#a-nameeventsourcingaevent-sourcingg)
+    - [<a name='AccelerationandManagementTools'></a>Acceleration and Management Toolss](#a-nameaccelerationandmanagementtoolsaacceleration-and-management-toolss)
+        - [<a name='Introduction-1'></a>Introductionn](#a-nameintroduction-1aintroductionn)
+            - [Modeling within Time Constraints](#modeling-within-time-constraints)
+            - [Facing the Time Challenging](#facing-the-time-challenging)
+        - [<a name='EventStorming'></a>Event Stormingg](#a-nameeventstormingaevent-stormingg)
+            - [Step 1: Model Events in Time Order](#step-1-model-events-in-time-order)
+            - [Step 2: Model Commands that Cause Events](#step-2-model-commands-that-cause-events)
+            - [Step 3: Model the Aggregates](#step-3-model-the-aggregates)
+            - [Step 4: Identify Context Boundaries](#step-4-identify-context-boundaries)
+            - [Step 5: Identify Views & Other Components](#step-5-identify-views--other-components)
+        - [<a name='ManagingDDDonanAgileProject'></a>Managing DDD on an Agile Projectt](#a-namemanagingdddonanagileprojectamanaging-ddd-on-an-agile-projectt)
+            - [Agile Execution Framework](#agile-execution-framework)
+            - [First Things First](#first-things-first)
+                - [Bottom Line: Identify Knowledge Gaps in the Model](#bottom-line-identify-knowledge-gaps-in-the-model)
+            - [Modeling Spikes and Modeling Debt](#modeling-spikes-and-modeling-debt)
+                - [Modeling Spikes](#modeling-spikes)
+                - [Modeling Debt](#modeling-debt)
+            - [Identifying Tasks and Estimating Effort](#identifying-tasks-and-estimating-effort)
+- [<a name='DomainServicesvsApplicationServices'></a>Domain Services vs Application Servicess](#a-namedomainservicesvsapplicationservicesadomain-services-vs-application-servicess)
+    - [<a name='DomainServicesvsApplicationServices-1'></a>Domain Services vs Application Servicess](#a-namedomainservicesvsapplicationservices-1adomain-services-vs-application-servicess)
+    - [<a name='Whentoextracttoadomainservice'></a>When to extract to a domain service??](#a-namewhentoextracttoadomainserviceawhen-to-extract-to-a-domain-service)
+- [Event Storming](#event-storming)
+- [Event Storming Video](#event-storming-video)
+    - [Bounded Contexts](#bounded-contexts)
+    - [Orchestration](#orchestration)
+        - [Solution is Choreography](#solution-is-choreography)
+    - [Entities Subcontexts](#entities-subcontexts)
+    - [User Stories](#user-stories)
+        - [Invest Criteria](#invest-criteria)
+        - [Epic](#epic)
+        - [Story Format](#story-format)
+        - [Activity Diagram](#activity-diagram)
+        - [More info on how to split a user story](#more-info-on-how-to-split-a-user-story)
+    - [Event Storming](#event-storming)
+        - [Live Event Storming Example](#live-event-storming-example)
+- [Library example DDD application](#library-example-ddd-application)
+
+<!-- /TOC --><!-- vscode-markdown-toc -->
 * 1. [DDD vs Clean Architecture](#DDDvsCleanArchitecture)
 * 2. [Command Query Segregation](#CommandQuerySegregation)
 * 3. [ 3. Domain-Driven Design Fundamentals](#3.Domain-DrivenDesignFundamentals)
@@ -93,29 +232,29 @@
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
 
-##  1. <a name='DDDvsCleanArchitecture'></a>DDD vs Clean Architecture
+## <a name='DDDvsCleanArchitecture'></a>DDD vs Clean Architecture
 
 - https://khalilstemmler.com/articles/software-design-architecture/domain-driven-design-vs-clean-architecture/
 
-##  2. <a name='CommandQuerySegregation'></a>Command Query Segregation
+## <a name='CommandQuerySegregation'></a>Command Query Segregationn
 
 - https://khalilstemmler.com/articles/oop-design-principles/command-query-segregation/
 
 - A *method* is either a `COMMAND` (which performs an action) OR a `QUERY` (that returns data to the caller), but never both
     - `Asking a question shouldn't change the answer`
 
-##  3. <a name='3.Domain-DrivenDesignFundamentals'></a> 3. Domain-Driven Design Fundamentals
+## <a name='3.Domain-DrivenDesignFundamentals'></a> 3. Domain-Driven Design Fundamentalss
 
 - Pluralsight, `Domain-Driven Design Fundamentals`
 - Domain driven design is useful when you have a `complex business domain` not `technical complexity`
 
 ![](./images/45.png)
 
-###  3.1. <a name='DDD:ModelingProblemsinSoftware'></a>DDD: Modeling Problems in Software
+### <a name='DDD:ModelingProblemsinSoftware'></a>DDD: Modeling Problems in Softwaree
 
-####  3.1.1. <a name='ValueObjects'></a>Value Objects
+#### <a name='ValueObjects'></a>Value Objectss
 
-####  3.1.2. <a name='BoundedContext'></a>Bounded Context
+#### <a name='BoundedContext'></a>Bounded Contextt
 
 - Each bounded context should have it's own team, codebase, and database schema
 
@@ -133,7 +272,7 @@
 
 ![](./images/3.png)
 
-####  3.1.3. <a name='SubDomainvsBoundedContext'></a>SubDomain vs Bounded Context
+#### <a name='SubDomainvsBoundedContext'></a>SubDomain vs Bounded Contextt
 
 - Subdomain is a problem space concept
 - Bounded context is a solution space concept
@@ -147,7 +286,7 @@
 
 - Ideally each subdomain would live in its own bounded context
 
-####  3.1.4. <a name='ContextMaps'></a>Context Maps
+#### <a name='ContextMaps'></a>Context Mapss
 
 - If an organization has multibounded contexts (ideally separated), there may be confusion when the different teams are talking to one another
 - `Context Maps` to visualize and demonstrate to the teams where their boundaries lie
@@ -171,7 +310,7 @@
 
 ![](./images/7.png)
 
-####  3.1.5. <a name='OurBoundedContextsforthisApp'></a>Our Bounded Contexts for this App
+#### <a name='OurBoundedContextsforthisApp'></a>Our Bounded Contexts for this Appp
 
 - Because these two teams share `Authentication` now, they agree to not change it without discussing with the other team first
 
@@ -183,7 +322,7 @@
 
 ![](./images/10.png)
 
-####  3.1.6. <a name='UbiquitousLanguage'></a>Ubiquitous Language
+#### <a name='UbiquitousLanguage'></a>Ubiquitous Languagee
 
 - Effective communication among all stakeholders is key to a successful initiative
 - One of the fundamental processes
@@ -191,7 +330,7 @@
 - Good practice is to explain back to business partners what you think the system should do in terms of the domain
 - For a single bounded context the ubiquitous language should be used throughout that context - from conversations to design documents to whiteboarding to emails to code - literally everywhere
 
-####  3.1.7. <a name='Terms'></a>Terms
+#### <a name='Terms'></a>Termss
 
 - `Problem Domain` - The specific probelm the software you're working on is trying to solve
 - `Core Domain` - the key differentiator for the customer's business - something you must do well and cannot oursource
@@ -210,9 +349,9 @@
 
 - Common for something like `Customer` to become a god object that everyone in your organization uses but applications really only want a tiny subset of that object for its own use
 
-###  3.2. <a name='ElementsofaDomainModel'></a>Elements of a Domain Model
+### <a name='ElementsofaDomainModel'></a>Elements of a Domain Modell
 
-####  3.2.1. <a name='FocusontheDomain'></a>Focus on the Domain
+#### <a name='FocusontheDomain'></a>Focus on the Domainn
 
 - Not the user interaction
 - Not the data access
@@ -230,12 +369,12 @@ The Domain Layer is responsible for representing concepts of business, informati
     - Accept a new patient
     - Book a room
 
-####  3.2.2. <a name='AnemicandRichModels'></a>Anemic and Rich Models
+#### <a name='AnemicandRichModels'></a>Anemic and Rich Modelss
 
 - In DDD, models that simply have getters/setters are considered `anemic` and are an anti-pattern
 - The domain models should contain the behaviors of the domain
 
-####  3.2.3. <a name='EntitiesinDDDandinOurBoundedContext'></a>Entities in DDD and in Our Bounded Context
+#### <a name='EntitiesinDDDandinOurBoundedContext'></a>Entities in DDD and in Our Bounded Contextt
 
 - Entities have identity and are mutable
 
@@ -259,7 +398,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 
 ![](./images/14.png)
 
-####  3.2.4. <a name='EntitiesSingleResponsibilityPrinciple'></a>Entities & Single Responsibility Principle
+#### <a name='EntitiesSingleResponsibilityPrinciple'></a>Entities & Single Responsibility Principlee
 
 - Does having a lot of business logic in an entity violate SRP?
 - An entity should't have a lot of business logic in it - otherwise as you build out your system, you have to put more and more into the class
@@ -272,17 +411,17 @@ The Domain Layer is responsible for representing concepts of business, informati
     - If there is a lot of logic around updating/handling the lifecycle, you may want some other services to help with this
     - Entity may also delegate to a value object
 
-####  3.2.5. <a name='ShouldEntitiesHaveEqualityComparers'></a>Should Entities Have Equality Comparers?
+#### <a name='ShouldEntitiesHaveEqualityComparers'></a>Should Entities Have Equality Comparers??
 
 - Need to take the cases individually - determing if entities are equal, it can be nontrivial
 
-####  3.2.6. <a name='ImplementingEntitiesofCode'></a>Implementing Entities of Code
+#### <a name='ImplementingEntitiesofCode'></a>Implementing Entities of Codee
 
 - Use static factory methods to help avoid entities being in an *inconsistent state*
 
 ![](./images/15.png)
 
-####  3.2.7. <a name='Associationsakarelationships'></a>Associations (aka relationships)
+#### <a name='Associationsakarelationships'></a>Associations (aka relationships))
 
 - Typically we think of relationships bidirectionally
 
@@ -310,11 +449,11 @@ The Domain Layer is responsible for representing concepts of business, informati
 
 ![](./images/19.png)
 
-####  3.2.8. <a name='ValueObjects-1'></a>Value Objects
+#### <a name='ValueObjects-1'></a>Value Objectss
 
 - Play equally important role as entity object
 - It measures, quantifies, or describes a thing in the domain
-- Identity is based on the composition of alues
+- Identity is based on the composition of values
 - Immutable - once the instance is created, you'd never change the values
 - Compared using all values
 - No side effects
@@ -353,7 +492,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - Value objects don't make sense on their own
 
 
-####  3.2.9. <a name='ValueObjectsinCode'></a>Value Objects in Code
+#### <a name='ValueObjectsinCode'></a>Value Objects in Codee
 
 - Private setters
 - User can't set/update state once object is created
@@ -364,7 +503,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 
 - In the `AnimalType` example, there's not much logic but it gives us a container for encapsulating the two related properties together as a single value object
 
-####  3.2.10. <a name='EntityLogicinValueObjects'></a>Entity Logic in Value Objects
+#### <a name='EntityLogicinValueObjects'></a>Entity Logic in Value Objectss
 
 - If there is logic that is `classic software logic`, you should put that in value objects
     - Value objects are usually easier to test than entities
@@ -372,7 +511,7 @@ The Domain Layer is responsible for representing concepts of business, informati
         - But it doesn't do a lot on its own
 - You look in the methods of the entities and they read like use cases vs the details of those use cases
 
-####  3.2.11. <a name='DomainServices'></a>Domain Services
+#### <a name='DomainServices'></a>Domain Servicess
 
 - Important operations that don't belong to an particular entity or value object
 - These services operate as `orchestators` for several different collaboratoring entities/value objects
@@ -392,7 +531,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 
 ![](./images/26.png)
 
-####  3.2.12. <a name='Glossary'></a>Glossary
+#### <a name='Glossary'></a>Glossaryy
 
 - Anemic Domain Model
     - Model with classes focused on state management. Good for CRUD
@@ -411,15 +550,15 @@ The Domain Layer is responsible for representing concepts of business, informati
     - Changes in the state of the application or interaction with the outside work (e.g. infrastructure)
     - For example, if querying state changed a piece of state, that would be a side effect
 
-###  3.3. <a name='AggregatesinDomain-DrivenDesign'></a>Aggregates in Domain-Driven Design
+### <a name='AggregatesinDomain-DrivenDesign'></a>Aggregates in Domain-Driven Designn
 
-####  3.3.1. <a name='TacklingDataComplexity'></a>Tackling Data Complexity
+#### <a name='TacklingDataComplexity'></a>Tackling Data Complexityy
 
 - One way to reduce complexity is reducing bidirectional relationships
 - Another way is using aggregates and aggregate roots
 - If your application doesn't have a clear notion of aggregates then the dependencies between your entities can grow out of control
 
-####  3.3.2. <a name='Aggregates'></a>Aggregates
+#### <a name='Aggregates'></a>Aggregatess
 
 - Aggregates consist of one or more aggregates and value objects that change together
 - All aggregates must have an `aggregate root` which is the parent object of the aggregate
@@ -441,7 +580,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 
 - `An aggreagte is a cluster of associated objects that we treate as a unit for the purpose of data changes`
 
-####  3.3.3. <a name='InteractingwithAggregates'></a>Interacting with Aggregates
+#### <a name='InteractingwithAggregates'></a>Interacting with Aggregatess
 
 - You have to go through the aggregate root to talk to other parts of the aggregate
 - Only way to get to `Address` is through the `Customer`
@@ -468,7 +607,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - This reflects more of the real world scenario, where an appointment just references the things it needs to make that appointment valid
     - That is why `ids` are used here
 
-####  3.3.4. <a name='UsingInvariants'></a>Using Invariants
+#### <a name='UsingInvariants'></a>Using Invariantss
 
 - Appointments shouldn't be double booked
 - Aggregate Roots responsibility to verify invariants
@@ -484,7 +623,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 
 - Looking back at our own example, `Appoinment` won't know if another `Appointment` has been booked at the same time - but a `Schedule` would
 
-####  3.3.5. <a name='ModelingBreakthroughsandRefactoring'></a>Modeling Breakthroughs and Refactoring
+#### <a name='ModelingBreakthroughsandRefactoring'></a>Modeling Breakthroughs and Refactoringg
 
 - You're not going to get it 100% right the first time
 - Your understanding will evolve
@@ -493,7 +632,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 
 ![](./images/37.png)
 
-####  3.3.6. <a name='AggregateTips'></a>Aggregate Tips
+#### <a name='AggregateTips'></a>Aggregate Tipss
 
 - Exist to redue complexity
 - May not always be the answer
@@ -505,7 +644,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - Rule of cascading deletes
     - For aggregate roots, deleting it should delete the other nonroot entities
 
-####  3.3.7. <a name='Glossary-1'></a>Glossary
+#### <a name='Glossary-1'></a>Glossaryy
 
 - Aggregate
     - A group of related objects that work together in a transaction
@@ -517,7 +656,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - Persistence ignorant classes
     - Classes that have no knowledge about how they are persisted
 
-###  3.4. <a name='Repositories'></a>Repositories
+### <a name='Repositories'></a>Repositoriess
 
 - Only specific objects, the aggregate roots, should be available upon global request
 
@@ -535,7 +674,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - Eric Evans: `A repository represents all objects of a certain type as a conceptual set...like a collection with more elaborate querying capability`
 
 
-####  3.4.1. <a name='Tips'></a>Tips
+#### <a name='Tips'></a>Tipss
 
 - Think of it as an in-memory collection - an illusion of a collection
     - Adding, removing, retrieving
@@ -563,7 +702,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 
 - Client code can be ignorant of repository implementation but developers cannot
 
-####  3.4.2. <a name='RepositoriesvsFactories'></a>Repositories vs Factories
+#### <a name='RepositoriesvsFactories'></a>Repositories vs Factoriess
 
 - Factories create new objects
 - Respositories are used to find and exist objects
@@ -575,17 +714,17 @@ The Domain Layer is responsible for representing concepts of business, informati
 - Factories do not do anything with persistence
 - Repositories do persistence
 
-####  3.4.3. <a name='UsingaGenericRepositoryInterface'></a>Using a Generic Repository Interface
+#### <a name='UsingaGenericRepositoryInterface'></a>Using a Generic Repository Interfacee
 
 - Using something like IRepository<T> makes sense when you have standard aggregates that all use CRUD operations, having a generic repository makes a lot of sense
 - If you have nonstandard aggregates, then you need to evaluate whether this makes sense or not
 - In this course's application's aggregate root - `Schedule` would only need a repository to `GetScheduledAppointmentsForDate` and `Update` an appointment
 
-####  3.4.4. <a name='GenericRepositoriesinDDD'></a>Generic Repositories in DDD
+#### <a name='GenericRepositoriesinDDD'></a>Generic Repositories in DDDD
 
 - A generic repository makes life simple but than it means classes can bypass the aggregate root and get information about entities directly via the repository
 
-####  3.4.5. <a name='RepositoriesinthisApplication'></a>Repositories in this Application
+#### <a name='RepositoriesinthisApplication'></a>Repositories in this Applicationn
 
 ![](./images/42.png)
 
@@ -596,7 +735,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 
 - You design the domain how you want it to and then persistence layer will likely require some extra work to get the data how you want it
 
-####  3.4.6. <a name='Glossary-1'></a>Glossary
+#### <a name='Glossary-1'></a>Glossaryy
 
 - Repository
     - A class that encapsulates the data persistence for an aggregate root
@@ -604,7 +743,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - ACID
     - Atomic (whole transaction occurs or none of it does), Consistent (contrainsts of data are applied), Isolated (if two different aggregates are being committed at the same time, they don't conflict one another - need them to occur in a sequence), and Durable (once transaction has occurred, if something happens to the system, we should be able to reload the state)
 
-###  3.5. <a name='AntiCorruptionLayerandDomainEvents'></a>AntiCorruption Layer and Domain Events
+### <a name='AntiCorruptionLayerandDomainEvents'></a>AntiCorruption Layer and Domain Eventss
 
 - Way to describe important events for state changes within the system so that other parts of the system can respond to the events
 - Domain events are encapsulated as objects
@@ -641,7 +780,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - No behavior or side effects
 - Lightweight
 
-####  3.5.1. <a name='Anti-CorruptionLayer'></a>Anti-Corruption Layer
+#### <a name='Anti-CorruptionLayer'></a>Anti-Corruption Layerr
 
 - Helps prevent corruption in domain model
 - When workign with another bounded context (even in your own system) or some or legacy system, the anti-corruption layer protects assumptions about the other system from leaking into your model
@@ -656,7 +795,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - What is needed to insulate your system from other systems
 - Their decisions should not bleed into your design
 
-####  3.5.2. <a name='Glossary-1'></a>Glossary
+#### <a name='Glossary-1'></a>Glossaryy
 
 - Domain event
     - A class that cpatures the occurrence of an event in a domain object
@@ -668,13 +807,13 @@ The Domain Layer is responsible for representing concepts of business, informati
 - Anti-Corruption Layer
     - Functionality that insulates a bounded context and handles interaction with foreign systems or contexts
 
-##  4. <a name='DomainDrivenDesignDistilled'></a>Domain Driven Design Distilled
+## <a name='DomainDrivenDesignDistilled'></a>Domain Driven Design Distilledd
 
 - https://learning.oreilly.com/videos/domain-driven-design-distilled
 
-###  4.1. <a name='Lession1:DDDforMe'></a>Lession 1: DDD for Me
+### <a name='Lession1:DDDforMe'></a>Lession 1: DDD for Mee
 
-####  4.1.1. <a name='GoodBadandEffectiveDesign'></a>Good, Bad, and Effective Design
+#### <a name='GoodBadandEffectiveDesign'></a>Good, Bad, and Effective Designn
 
 - When a new framework, some new technology, etc is seen as the means to conquer a particular software problem, the solution often turns out worse than simply using good design principles
     - Favor software development through good design
@@ -705,12 +844,12 @@ The Domain Layer is responsible for representing concepts of business, informati
 - This forces companies to focus on what they're best at
     - An insurance company can't be the best database company, it can't be the best framework company
 
-####  4.1.2. <a name='StrategicDesign'></a>Strategic Design
+#### <a name='StrategicDesign'></a>Strategic Designn
 
 - Most critical software design tools in DDD toolbox
 - Bounded context, ubiquitous langauge, sub domains, context mapping
 
-####  4.1.3. <a name='TacticalDesign'></a>Tactical Design
+#### <a name='TacticalDesign'></a>Tactical Designn
 
 - Aggregates and domain events
     - Aggregates help you to control transactions and maintain invariants with data consistency in your models
@@ -718,9 +857,9 @@ The Domain Layer is responsible for representing concepts of business, informati
 - Strategic tools are far more important
 - Sometimes limited based on language, technical platform, technique using (fp vs oop)
 
-###  4.2. <a name='StrategicDesignwithBoundedContextsandtheUbiquitiousLanguage'></a>Strategic Design with Bounded Contexts and the Ubiquitious Language
+### <a name='StrategicDesignwithBoundedContextsandtheUbiquitiousLanguage'></a>Strategic Design with Bounded Contexts and the Ubiquitious Languagee
 
-####  4.2.1. <a name='Introduction'></a>Introduction
+#### <a name='Introduction'></a>Introductionn
 
 - Two of most important tools are the bounded context and the ubiquitous language
 - A bounded context is a contextual/semantic boundry
@@ -737,7 +876,7 @@ The Domain Layer is responsible for representing concepts of business, informati
     - At the same time, speaking Spanish in Spain is slightly different than speaking Spanish in Colombia
     - The same word used in different bounded contexts will likely mean slightly different thing
 
-####  4.2.2. <a name='DomainExpertsandBusinessDrivers'></a>Domain Experts and Business Drivers
+#### <a name='DomainExpertsandBusinessDrivers'></a>Domain Experts and Business Driverss
 
 - The domain expert has specific knowledge in a particular area of business
 - Domain expert is responsible for carrying vision that will create competitive advantage for the business
@@ -749,7 +888,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - Each area of the business should have a bounded context for their specific model
     - For example, in one bounded context we have a policy specifically modeled for the underwriting area of the business
 
-####  4.2.3. <a name='CaseStudy'></a>Case Study
+#### <a name='CaseStudy'></a>Case Studyy
 
 - In the area of scrum product management
 - Will look at the model for a scrum project management tool
@@ -794,7 +933,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - This model can keep growing and growing
 - This is very quickly leading to a big ball of mud
 
-####  4.2.4. <a name='FundamentalStrategicDesignNeeded'></a>Fundamental Strategic Design Needed
+#### <a name='FundamentalStrategicDesignNeeded'></a>Fundamental Strategic Design Neededd
 
 - What tools can we use to avoid the big ball of mud?
     - Bounded context and ubiquitous language
@@ -813,7 +952,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 - There should be a feedback loop between developers and domain experts
 - Aha moments will happen when this collaboration occurs
 
-####  4.2.5. <a name='ChallengeandUnify'></a>Challenge and Unify
+#### <a name='ChallengeandUnify'></a>Challenge and Unifyy
 
 - Can break up the big ball of mud by challenging our previous model by using bounded context and ubiquitous language to understand what belongs in and out of the bounded context
 - Does tenant, user,and permission belong with the ubiquitous language of scrum?
@@ -884,7 +1023,7 @@ The Domain Layer is responsible for representing concepts of business, informati
 
 - **Every DDD project will contain multiple bounded contexts**
 
-####  4.2.6. <a name='Architecture'></a>Architecture
+#### <a name='Architecture'></a>Architecturee
 
 - What does a bounded context actually look like in code?
 - What sort of architectural patterns can be used?
@@ -923,9 +1062,9 @@ The Domain Layer is responsible for representing concepts of business, informati
     - REST
     - Microservices and SOA
 
-###  4.3. <a name='StrategicDesignwithSubdomains'></a>Strategic Design with Subdomains
+### <a name='StrategicDesignwithSubdomains'></a>Strategic Design with Subdomainss
 
-####  4.3.1. <a name='WhatIsaSubdomain'></a>What Is a Subdomain?
+#### <a name='WhatIsaSubdomain'></a>What Is a Subdomain??
 
 - It is a sub-part of the whole business domain
 - Business domain is broken up into logical subdomains
@@ -938,7 +1077,7 @@ The Domain Layer is responsible for representing concepts of business, informati
     - It should have one clean *Bounded Context* as the *Core Domain*
     - There will be other supportign *Bounded Contexts*
 
-####  4.3.2. <a name='TypesofSubdomains'></a>Types of Subdomains
+#### <a name='TypesofSubdomains'></a>Types of Subdomainss
 
 ##### Core domain
 
@@ -972,19 +1111,19 @@ Requires custom development because an off-the-self product doesn't exist
 - IAM is a good example
 - Don't want to put same investment as you do the core example
 
-####  4.3.3. <a name='DealingWithComplexity'></a>Dealing With Complexity
+#### <a name='DealingWithComplexity'></a>Dealing With Complexityy
 
 - What happens when you have to integrate with a big ball of mud at some time
 - How do you deal with this?
 - Can treat each of the logical models within the big ball of mud as if they were their own bounded context
 
-###  4.4. <a name='StrategicDesignWithContextMapping'></a>Strategic Design With Context Mapping
+### <a name='StrategicDesignWithContextMapping'></a>Strategic Design With Context Mappingg
 
 - In our application we have the core domain (agile project management) and then there are various supporting subdomains
 - When we integrate our core domain with these other domains, how do we do those integrations?
 - What are the relationships between the teams?
 
-####  4.4.1. <a name='Partnership'></a>Partnership
+#### <a name='Partnership'></a>Partnershipp
 
 - Two teams work on two different bounded contexts but they have common goals and they support each other
     - Team 1 is in a bounded context
@@ -994,7 +1133,7 @@ Requires custom development because an off-the-self product doesn't exist
 
 ![](./images/65.png)
 
-####  4.4.2. <a name='SharedKernel'></a>Shared Kernel
+#### <a name='SharedKernel'></a>Shared Kernell
 
 - At least two teams have a very similar software model
 - They develop a single shared portion of a model
@@ -1002,7 +1141,7 @@ Requires custom development because an off-the-self product doesn't exist
 
 ![](./images/66.png)
 
-####  4.4.3. <a name='Customer-Supplier'></a>Customer-Supplier
+#### <a name='Customer-Supplier'></a>Customer-Supplierr
 
 - Upstream/downstream relationship between two teams
 - U = upstream (team 1)
@@ -1014,7 +1153,7 @@ Requires custom development because an off-the-self product doesn't exist
 
 ![](./images/67.png)
 
-####  4.4.4. <a name='Conformist'></a>Conformist
+#### <a name='Conformist'></a>Conformistt
 
 - Upstream/downstream relationship
 - Team 1 has upstream model that will directly impact team 2
@@ -1023,7 +1162,7 @@ Requires custom development because an off-the-self product doesn't exist
     - Model is so big and complex that team 2 doesn't want to deal directly with it
 - Team 1 has no interest in supporting downstream which is why downstream must conform to whatever the upstream provides
 
-####  4.4.5. <a name='Anti-corruptionLayer'></a>Anti-corruption Layer
+#### <a name='Anti-corruptionLayer'></a>Anti-corruption Layerr
 
 - Two teams with two separate models
 - Downstream team doesn't want to be influenced by upstream model
@@ -1032,35 +1171,35 @@ Requires custom development because an off-the-self product doesn't exist
 - Opposite of `Conformist` pattern
 ![](./images/68.png)
 
-####  4.4.6. <a name='OpenHostService'></a>Open Host Service
+#### <a name='OpenHostService'></a>Open Host Servicee
 
 - Team 1 publishes API (restful, messaging, rpc, etc) that team 2 directly integrates with because it is very convenient to do so
 - Team 2 consumes model as it is without translating (or can easily translates with ACL)
 
 ![](./images/69.png)
 
-####  4.4.7. <a name='PublishedLanguage'></a>Published Language
+#### <a name='PublishedLanguage'></a>Published Languagee
 
 - Upstream, team 1,produces well defined well document data exchange format that allows team 2 to easily and comfortably consume data from team 1
 - Common for the producer of an `open host service` to provide a published language to the downstream service
 
 ![](./images/70.png)
 
-####  4.4.8. <a name='SeparateWays'></a>Separate Ways
+#### <a name='SeparateWays'></a>Separate Wayss
 
 - Team 2 stops using Team 1's service and consuming their model
     - Could be variety of reasons like inconvenience
 
 ![](./images/71.png)
 
-####  4.4.9. <a name='BigBallofMud'></a>Big Ball of Mud
+#### <a name='BigBallofMud'></a>Big Ball of Mudd
 
 - You will likely need to integrate with a big ball of mud at some point
 - When you make changes in one part of the model it will likely have a negative impact on another part of the model
 - Rippling effects
 - If you do need to integrate with it, use an ACL in your service to protect yourself against it
 
-####  4.4.10. <a name='MakingGoodUseofContextMapping'></a>Making Good Use of Context Mapping
+#### <a name='MakingGoodUseofContextMapping'></a>Making Good Use of Context Mappingg
 
 - How will we actually use context mapping for integration between context mapping?
 - 3 main different stypes: RPC, RESTful, and Messaging
@@ -1135,9 +1274,9 @@ Requires custom development because an off-the-self product doesn't exist
 
 ![](./images/81.png)
 
-###  4.5. <a name='TaticalDesignWithAggregates'></a>Tatical Design With Aggregates
+### <a name='TaticalDesignWithAggregates'></a>Tatical Design With Aggregatess
 
-####  4.5.1. <a name='WhyUsed'></a>Why Used?
+#### <a name='WhyUsed'></a>Why Used??
 
 ![](./images/82.png)
 
@@ -1164,7 +1303,7 @@ Requires custom development because an off-the-self product doesn't exist
 
 ![](./images/84.png)
 
-####  4.5.2. <a name='AggregateRulesofThumb'></a>Aggregate Rules of Thumb
+#### <a name='AggregateRulesofThumb'></a>Aggregate Rules of Thumbb
 
 - Protect business invariants inside Aggregate boundaries
 - Design small Aggregates
@@ -1232,7 +1371,7 @@ Requires custom development because an off-the-self product doesn't exist
 
 ![](./images/92.png)
 
-####  4.5.3. <a name='ModelingAggregates'></a>Modeling Aggregates
+#### <a name='ModelingAggregates'></a>Modeling Aggregatess
 
 - Don't model using an `anemic domain model`
     - This domain model is usually missing all of the business logic
@@ -1270,7 +1409,7 @@ Requires custom development because an off-the-self product doesn't exist
 
 ![](./images/96.png)
 
-####  4.5.4. <a name='ChooseYourAbstractionsCarefully'></a>Choose Your Abstractions Carefully
+#### <a name='ChooseYourAbstractionsCarefully'></a>Choose Your Abstractions Carefullyy
 
 - The ubiqutious language in the `Scrum Project Management` domain naturally uses language like:
     - Product
@@ -1309,7 +1448,7 @@ Requires custom development because an off-the-self product doesn't exist
 - Protects the organization's software investment
 - Saves time and money
 
-####  4.5.5. <a name='Right-SizingAggregates'></a>Right-Sizing Aggregates
+#### <a name='Right-SizingAggregates'></a>Right-Sizing Aggregatess
 
 ##### Modeling Steps
 
@@ -1333,7 +1472,7 @@ Requires custom development because an off-the-self product doesn't exist
     - This means it needs to be in the same A aggregate, so they both need to be housed under Aggregate A
 - Aggregate C14 can be eventually consistent, this can happen via a domain event
 
-####  4.5.6. <a name='TestableUnits'></a>Testable Units
+#### <a name='TestableUnits'></a>Testable Unitss
 
 - Aggregate designs should accomodate unit testings
 
@@ -1343,9 +1482,9 @@ Requires custom development because an off-the-self product doesn't exist
 - Unit tests are different from acceptance tests
 - Test for correctness and robustness of each Component
 
-###  4.6. <a name='TacticalDesignwithDomainEvents'></a>Tactical Design with Domain Events
+### <a name='TacticalDesignwithDomainEvents'></a>Tactical Design with Domain Eventss
 
-####  4.6.1. <a name='Introduction-1'></a>Introduction
+#### <a name='Introduction-1'></a>Introductionn
 
 ![](./images/99.png)
 
@@ -1366,7 +1505,7 @@ Requires custom development because an off-the-self product doesn't exist
 - This is causal consistency
 - `In terms of domain events, we have to be certain that each of the events are received and handled in the sequence that they occurred`
 
-####  4.6.2. <a name='DesigningImplementingandUsingDomainEvents'></a>Designing, Implementing, and Using Domain Events
+#### <a name='DesigningImplementingandUsingDomainEvents'></a>Designing, Implementing, and Using Domain Eventss
 
 ![](./images/100.png)
 
@@ -1412,7 +1551,7 @@ Requires custom development because an off-the-self product doesn't exist
         - End of day/week/year
     - Example, fiscal year end, market close
 
-####  4.6.3. <a name='EventSourcing'></a>Event Sourcing
+#### <a name='EventSourcing'></a>Event Sourcingg
 
 - If our `BacklogItem` aggregate was an event sourced aggregate, we would save an event for every "signifiant" thing that happens to it
 
@@ -1440,9 +1579,9 @@ Requires custom development because an off-the-self product doesn't exist
 - EventContent is a serialized version of the event
 - Now if we reconsitute the BacklogItem aggregate, we would read the entire stream for `backlogItem123`(in this case stream version 1,2,3)
 
-###  4.7. <a name='AccelerationandManagementTools'></a>Acceleration and Management Tools
+### <a name='AccelerationandManagementTools'></a>Acceleration and Management Toolss
 
-####  4.7.1. <a name='Introduction-1'></a>Introduction
+#### <a name='Introduction-1'></a>Introductionn
 
 - How do we get a good model under tight time constraints?
 
@@ -1459,7 +1598,7 @@ Requires custom development because an off-the-self product doesn't exist
 - Event Storming
 - Agile estimations
 
-####  4.7.2. <a name='EventStorming'></a>Event Storming
+#### <a name='EventStorming'></a>Event Stormingg
 
 - Accelerated and knowledge crunching technique
 - Focus on business process
@@ -1541,7 +1680,7 @@ Requires custom development because an off-the-self product doesn't exist
 - Identify certain policies where there is complexity around seeing that a certain business policy is carried out (you can represent this with a lilac/purple sticky)
     - Policy will receive events and emit commands (opposite of an aggregate)
 
-####  4.7.3. <a name='ManagingDDDonanAgileProject'></a>Managing DDD on an Agile Project
+#### <a name='ManagingDDDonanAgileProject'></a>Managing DDD on an Agile Projectt
 
 - Reject taskboard shuffle
     - This is where design doesn't really happen
@@ -1606,11 +1745,11 @@ Requires custom development because an off-the-self product doesn't exist
 - Things will need to be tuned as we go, the time estimations may change
 - These estimations can include unit tests
 
-##  5. <a name='DomainServicesvsApplicationServices'></a>Domain Services vs Application Services
+## <a name='DomainServicesvsApplicationServices'></a>Domain Services vs Application Servicess
 
 - https://enterprisecraftsmanship.com/posts/domain-vs-application-services/
 
-###  5.1. <a name='DomainServicesvsApplicationServices-1'></a>Domain Services vs Application Services
+### <a name='DomainServicesvsApplicationServices-1'></a>Domain Services vs Application Servicess
 
 - **Domain Services hold domain logic whereas application services do not**
 - Domain services participate in the business decision making process just like entities and value objects do
@@ -1672,7 +1811,7 @@ public void DispenseMoney(decimal amount)
 
 - So even if the application service ignores the decision made by `CanDispenseMoney`, the Atm entity cannot enter an inconsistent state
 
-###  5.2. <a name='Whentoextracttoadomainservice'></a>When to extract to a domain service?
+### <a name='Whentoextracttoadomainservice'></a>When to extract to a domain service??
 
 - In above example, the code doesn't make any business decisions
 - **Note that the domain model is isolated**
@@ -2054,3 +2193,9 @@ We put just enough logic into the domain service to work properly
     - comptroller is a microservice
     - warehouse is a microservice
         - This microservice serves an an entry point for working with other entities in the warehouse context (shipping clerk, customer liason, comptroller)
+    
+<br>
+
+## Library (example) DDD application
+
+- https://github.com/ddd-by-examples/library
