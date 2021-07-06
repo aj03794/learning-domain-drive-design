@@ -1,0 +1,1 @@
+https://enterprisecraftsmanship.com/posts/entity-vs-value-object-the-ultimate-list-of-differences/
