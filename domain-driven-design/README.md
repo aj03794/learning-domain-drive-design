@@ -2,6 +2,69 @@
 
 - Pluralsight course - https://app.pluralsight.com/library/courses/domain-driven-design-in-practice
 
+### Starting Out
+
+- Start project w/ core domain
+    - Start experimenting with domain model
+- Start with single bounded context
+- Always look at code and look for hidden abstractions
+    - In this video series, initially `SnackMachine` was made with the `Money` concept embedded in the class
+
+### Entities vs Value Objects
+
+- 3 types of equality
+    - identifier equality
+        - class has id field
+        - two instances are equal if they have the same id
+    - reference equality
+        - objects refer to same address in memory
+    - structural equality
+        - objects match if all members of object match
+    
+![](./images/21.png)
+
+#### Value Objects
+
+- value objects don't have Id field
+- Can be treated interchangeably
+- Immutable
+- I don't care what $1 bill I use
+- Don't have own tables in the database
+
+#### Entities
+
+- Have inherent identity
+- Mutable
+
+#### Lifespan of them
+
+- Value Objects live inside of entities
+- Always at least one entity that owns a value object
+    - This says that more than one entity can own the same value object
+
+### How to Recognize a Value Object
+
+- Think about whether you can switch out one object for another one with the same set of attributes
+    - If doing this doesn't mean anything in context of the application, you might have a value object
+- Integers are a good example of value objects
+    - It doesn't matter what `5` you use
+    - Does the thing being evaluated act like an integer?
+- **Always prefer value objects to entites**
+    - value objects are more light weight and immutable
+    - Easier to work with
+    - Put most of your business logic into value objects
+- Entities act as wrappers
+- Refactor when you realize
+
+### Entity Base Class
+
+- Use an interface that has an `Id` property
+    - Not preferable b/c you can't gather common behavior in an interface
+    - Interfaces introduce a `can-do` relationship
+- Use a base class
+    - Introduces the correct `is-a` relationship
+    - Allows us to gather common behavior across all entities
+
 ### Main Concepts
 
 - `Ubiquitous Language`
@@ -127,6 +190,8 @@
     - Experimenting with code
     - Not really sure exactly how things are working or what it should do
 
+![](./images/22.png)
+
 ## Introducing UI and Persistence Layers
 
 ### Adding UI
@@ -137,7 +202,7 @@
 
 ![](./images/10.png)
 
-- ViewModel transforms our model layer into something usable for the View
+- ViewModel (our application services) transforms our model layer into something usable for the View
 
 ![](./images/11.png)
 
@@ -150,16 +215,60 @@
 - The view just displays the properties that the ViewModel says to display
     - Also updates those properties when the ViewModel says they changed
 
+### Designing the Database
+
+- Don't add separate tables for Value Objects
+    - Inline them w/ the parent entity's table
+
+### Id Generation Strategies
+
+- Use the database to create the id
+    - Doesn't play well with the `unit of work` pattern
+- Use GUIDs
+    - A little cumbersome to work with potentially
+- Hi/Lo algorithm
+
+### Mapping Strategies
+
+- XML
+    - Prone to break
+- Attributes
+    - You annotate your entities with the mapping
+    - You are polluting your entity with persistence concerns when you do this
+- Fluent Mapping
+    - Create separate map files for each entity
+
+### Adjusting the Domain Layer for use with ORM
+
+- Want to isolate domain model as much as possible
+- But there are some tradeoffs, and with an ORM, some persistence details will leak into Domain Model
+
 ## Extending the Bounded Context with Aggregates
 
 ### Aggregates
 
-- Gathers multiple entities together under a single abstraction
+- In this example, our application has 2 aggregates
+    - Snack Machine
+    - Snack
+
+<br>
+
+- Simplify domain model by gathering multiple entities together under a single abstraction
 - Every aggregate has a set of invariants that it's responsible for maintaining
     - Invariants are rules that that aggregate enforces to ensure it's in a valid state
+        - For example, if our snack machine cannot hold more than 10 pounds of snacks, then the aggregate root would be responsible for maintaining that invariant
+            - Client code cannot make the snack machine extend 10lbs worth of snack
+- Every aggregate has an `aggregate root` 
+    - In our example, this is `Snack Machine`
 - Classes outside aggregate can only reference the root of the aggregate
+    - In our example, a client could get access to `Slot`, but they should only get it by accessing `Snack Machine`
+    - Minimize exposing internal entities if possible
 
 ![](./images/12.png)
+
+- Aggregates act as single operational unit for application layer
+- Application services should retrieve them from database, perform actions, and store them back as a single object
+    - They should consider an aggregate as a conceptual whole and refrain from working with separate entities within the aggregate
 
 ![](./images/13.png)
 
@@ -177,13 +286,14 @@
     - If yes, it potentially should be the root if it's own aggregate
     - Otherwise it should be apart of some existing aggregate
 - A slot cannot exist without a snack machine so it needs to be apart of the same aggregate as snack machine
+    - But a snack can exist without a snack machine
 - Boundaries can always be refactored
 - Don't create aggregates that are too large
     - The bigger your aggregates are, the harder it is to maintain consistency
     - Simplicity vs Performance
 - Most aggregates consist of 1 or 2 entities
 - 3 entities per aggregate is usually a max
-- Number of Value Objets per aggregate is unlimited
+- Number of Value Objects per aggregate is unlimited
 
 ## Other Topics
 

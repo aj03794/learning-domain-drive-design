@@ -111,11 +111,24 @@
 
 ![](./images/45.png)
 
+### Benefits
+
+- Flexible
+- Customer's vision/perspective of the problem
+- Path through a very complex problem
+- Well-organized and easily tested code
+- Business logic lives in one place
+
+### Drawbacks
+
+- DDD is designed to work in a domain with a lot of business complexity - NOT technical complexity
+- Getting team or company buy-in to DDD
+
 ### <a name='DDD:ModelingProblemsinSoftware'></a>DDD: Modeling Problems in Softwaree
 
-#### <a name='ValueObjects'></a>Value Objectss
+#### <a name='ValueObjects'></a>Value Objects
 
-#### <a name='BoundedContext'></a>Bounded Contextt
+#### <a name='BoundedContext'></a>Bounded Context
 
 - Each bounded context should have it's own team, codebase, and database schema
 
